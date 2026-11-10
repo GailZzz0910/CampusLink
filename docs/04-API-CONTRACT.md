@@ -2,7 +2,10 @@
 
 ## Purpose and rules
 
-Base URL: `http://localhost:4000/api`. This is the authoritative backend/frontend contract. JSON success responses use `{ "data": {}, "meta": {} }`; errors use `{ "error": { "code": "ERROR_CODE", "message": "Human-readable explanation." } }`. Implemented endpoints use statuses 200, 201, 400, 401, 403, 404, 409, 422, 500, and 503. The instructor starter additionally uses 501 for database-dependent routes that students have not implemented yet.
+Base URL: `http://localhost:4000/api`. This is the authoritative backend/frontend contract. JSON success responses use `{ "data": {}, "meta": {} }`; errors use `{ "error": { "code": "ERROR_CODE", "message": "Human-readable explanation." } }`. Implemented endpoints use statuses 200, 201, 400, 401, 403, 404, 409, 422, 500, and 503. The instructor starter additionally uses 501 for database-dependent routes that students have not implemented yet. Its health
+route is the exception: after `DATABASE_URL`, `MONGODB_URI`, and
+`MONGODB_DB` are configured, it performs only PostgreSQL `SELECT 1` and a
+MongoDB `ping` so Activity 1 connectivity can be demonstrated.
 
 Authenticated requests send a valid bearer JWT. Public health and login are unauthenticated. Authorization is role-based. Exact field validation and error codes are implementation details that must remain consistent with these shapes.
 

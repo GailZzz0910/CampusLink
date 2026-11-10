@@ -40,9 +40,11 @@ error handling, the backend environment-variable template, the fixed API
 contract, and the testing and acceptance requirements. Students are not
 required to design the entire Express server architecture from scratch.
 
-The starter backend runs without database credentials. Its health endpoint
-reports PostgreSQL and MongoDB as `NOT_CONFIGURED`; database-dependent routes
-return HTTP 501 until implemented by the student group.
+The starter backend runs without database credentials. When credentials are
+provided, its health endpoint performs PostgreSQL and MongoDB connection/ping
+checks and reports `CONNECTED`, `UNAVAILABLE`, or `NOT_CONFIGURED`
+truthfully. Database-dependent routes return HTTP 501 until implemented by the
+student group.
 
 ## Student implementation scope
 

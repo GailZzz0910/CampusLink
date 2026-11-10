@@ -1,59 +1,63 @@
 import express from 'express';
-
-const NOT_IMPLEMENTED_MESSAGE = 'This database operation has not yet been implemented by the student group.';
-
-function notImplemented(req, res) {
-  res.status(501).json({
-    error: {
-      code: 'NOT_IMPLEMENTED',
-      message: NOT_IMPLEMENTED_MESSAGE,
-    },
-  });
-}
+import { checkMongoDb } from './db/mongodb.js';
+import { checkPostgres } from './db/postgres.js';
+import { databaseRouteNotImplemented } from './middleware/notImplemented.js';
 
 function registerPlaceholderRoutes(router) {
-  router.post('/auth/login', notImplemented);
-  router.get('/auth/me', notImplemented);
+  router.post('/auth/login', databaseRouteNotImplemented);
+  router.get('/auth/me', databaseRouteNotImplemented);
 
-  router.get('/campuses', notImplemented);
-  router.get('/rooms', notImplemented);
-  router.get('/rooms/:id', notImplemented);
-  router.post('/rooms', notImplemented);
-  router.patch('/rooms/:id', notImplemented);
+  router.get('/campuses', databaseRouteNotImplemented);
+  router.get('/rooms', databaseRouteNotImplemented);
+  router.get('/rooms/:id', databaseRouteNotImplemented);
+  router.post('/rooms', databaseRouteNotImplemented);
+  router.patch('/rooms/:id', databaseRouteNotImplemented);
 
-  router.get('/reservations', notImplemented);
-  router.post('/reservations', notImplemented);
-  router.patch('/reservations/:id/cancel', notImplemented);
+  router.get('/reservations', databaseRouteNotImplemented);
+  router.post('/reservations', databaseRouteNotImplemented);
+  router.patch('/reservations/:id/cancel', databaseRouteNotImplemented);
 
-  router.get('/service-requests', notImplemented);
-  router.post('/service-requests', notImplemented);
-  router.get('/service-requests/:id', notImplemented);
-  router.post('/service-requests/:id/comments', notImplemented);
-  router.patch('/service-requests/:id/status', notImplemented);
+  router.get('/service-requests', databaseRouteNotImplemented);
+  router.post('/service-requests', databaseRouteNotImplemented);
+  router.get('/service-requests/:id', databaseRouteNotImplemented);
+  router.post('/service-requests/:id/comments', databaseRouteNotImplemented);
+  router.patch('/service-requests/:id/status', databaseRouteNotImplemented);
 
-  router.get('/analytics/summary', notImplemented);
-  router.get('/analytics/export', notImplemented);
+  router.get('/analytics/summary', databaseRouteNotImplemented);
+  router.get('/analytics/export', databaseRouteNotImplemented);
 
-  router.get('/integration/events', notImplemented);
-  router.get('/integration/status', notImplemented);
-  router.post('/integration/process-pending', notImplemented);
+  router.get('/integration/events', databaseRouteNotImplemented);
+  router.get('/integration/status', databaseRouteNotImplemented);
+  router.post('/integration/process-pending', databaseRouteNotImplemented);
 }
 
 export function registerRoutes(app) {
   const router = express.Router();
 
-  router.get('/health', (req, res) => {
-    res.json({
+  router.get('/health', async (req, res) => {
+    const [postgresql, mongodb] = await Promise.all([checkPostgres(), checkMongoDb()]);
+    const healthy = [postgresql, mongodb].every(({ status }) => status !== 'UNAVAILABLE');
+    const response = {
       data: {
-        status: 'ok',
+        status: healthy ? 'ok' : 'degraded',
         databases: {
-          postgresql: 'NOT_CONFIGURED',
-          mongodb: 'NOT_CONFIGURED',
+          postgresql: postgresql.status,
+          mongodb: mongodb.status,
         },
         integration: 'NOT_CONFIGURED',
       },
       meta: {},
+    };
+
+    if (!healthy) return res.status(503).json({
+      ...response,
+      error: {
+        code: 'DATABASE_UNAVAILABLE',
+        message: 'One or more configured databases could not be reached.',
+      },
     });
+
+    return res.json(response);
   });
 
   registerPlaceholderRoutes(router);

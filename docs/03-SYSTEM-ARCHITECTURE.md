@@ -45,7 +45,12 @@ flowchart LR
 
 ## Local ports and environment
 
-Frontend: `http://localhost:5173`; backend: `http://localhost:4000`; API base: `http://localhost:4000/api`. Frontend variables are `VITE_API_BASE_URL` and `VITE_DEMO_MODE`. Backend variables are `PORT`, `DATABASE_URL`, `MONGODB_URI`, `MONGODB_DB`, `JWT_SECRET`, and `FRONTEND_ORIGIN`. Secrets remain backend-only.
+Frontend: `http://localhost:5173`; backend: `http://localhost:4000`; API base: `http://localhost:4000/api`. Frontend variables are `VITE_API_BASE_URL` and `VITE_DEMO_MODE`. Backend
+variables are `PORT`, `DATABASE_URL`, `MONGODB_URI`, `MONGODB_DB`,
+`MONGODB_DNS_SERVERS`, `JWT_SECRET`, and `FRONTEND_ORIGIN`. `MONGODB_DNS_SERVERS`
+is an optional comma-separated student troubleshooting setting for Node.js SRV
+resolution; it is not used by the unconnected instructor starter. Secrets
+remain backend-only.
 
 ## Actual versus capability
 

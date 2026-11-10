@@ -27,8 +27,10 @@ checklist.
 Use the fixed ports: frontend `5173`, backend `4000`, API `/api`. Start only the approved frontend/backend development commands after implementation is authorized. Verify health, authentication, database connectivity, and integration status before feature testing. Keep database setup and test-data procedures repeatable and safe.
 
 The starter can be run before database setup. Its health endpoint reports
-PostgreSQL and MongoDB as `NOT_CONFIGURED`, and database-dependent endpoints
-return HTTP 501. Students complete the PostgreSQL/MongoDB connections,
+`CONNECTED` only after the instructor-provided PostgreSQL/MongoDB connection
+and ping checks succeed, `UNAVAILABLE` when configured settings cannot reach a
+database, and `NOT_CONFIGURED` when settings are absent. Database-dependent
+endpoints return HTTP 501. Students complete the PostgreSQL/MongoDB
 schemas/collections, queries and indexes, reservation transactions, MongoDB
 CRUD, outbox synchronization, Change Streams, retries, backup/recovery, and
 integrity verification.

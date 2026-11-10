@@ -33,7 +33,11 @@ Copy-Item .env.example .env
 ```
 
 Edit only `backend\.env` with your own local Supabase, MongoDB Atlas, and JWT
-values. Never commit either `.env` file or share credentials.
+values. Never commit either `.env` file or share credentials. The optional
+`MONGODB_DNS_SERVERS` value may contain a comma-separated fallback such as
+`8.8.8.8,1.1.1.1` if Node.js cannot resolve Atlas SRV records. Use it only in
+your student MongoDB connection implementation; the instructor starter does
+not connect to MongoDB.
 
 ## Run the starter
 
@@ -57,9 +61,20 @@ Open `http://localhost:5173`. The frontend calls
 `http://localhost:4000/api` by default. Demo Mode works without databases and
 uses clearly labelled fictional records.
 
-Before database work is implemented, `GET /api/health` returns HTTP 200 with
-PostgreSQL and MongoDB reported as `NOT_CONFIGURED`. Database-dependent routes
-return HTTP 501. This is expected and is not mock database behavior.
+`GET /api/health` returns HTTP 200 when no configured database is unavailable.
+It reports `CONNECTED` only after the starter's connection and ping checks
+succeed, `UNAVAILABLE` when configured settings cannot reach a database, and
+`NOT_CONFIGURED` when settings are absent. A configured database failure
+returns HTTP 503. Database-dependent routes return HTTP 501 until students
+implement the required operations. This is expected and is not mock database
+behavior.
+
+After credentials are placed in the local, uncommitted `backend/.env`, use
+the health response as Activity 1 connectivity evidence. It must report
+`databases.postgresql: "CONNECTED"` and `databases.mongodb: "CONNECTED"`.
+The starter performs only a PostgreSQL `SELECT 1` and MongoDB `ping`; it does
+not create or query application schemas, collections, or student-assessed
+features.
 
 ```powershell
 Invoke-RestMethod http://localhost:4000/api/health
@@ -78,6 +93,8 @@ Invoke-RestMethod http://localhost:4000/api/health
 ### MongoDB
 
 - Configure the official MongoDB driver and Atlas database.
+- If required, read `MONGODB_DNS_SERVERS`, call `dns.setServers()` before
+  creating the connection, and document why the fallback was needed.
 - Design service-request, activity-log, and integration-event collections.
 - Implement request creation, retrieval, comments, and status history.
 - Add indexes and unique event protection.

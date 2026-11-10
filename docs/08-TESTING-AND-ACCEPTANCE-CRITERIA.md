@@ -8,10 +8,11 @@ The instructor-provided template includes the common frontend, minimal
 Express starter, registered API routes, basic middleware/error handling,
 environment template, API Contract, and these testing requirements. Before
 student database work is added, the starter must start without credentials,
-return truthful `NOT_CONFIGURED` database health states, return HTTP 501 for
-database-dependent routes, and return the standard HTTP 404 response for
-unknown routes. Students then add evidence for the database and integration
-behaviors below; they do not need to redesign the server architecture.
+return `NOT_CONFIGURED` for absent database settings, perform connection/ping
+checks when settings are supplied, return HTTP 501 for database-dependent
+routes, and return the standard HTTP 404 response for unknown routes.
+Students then add evidence for the database and integration behaviors below;
+they do not need to redesign the server architecture.
 
 ## Test areas
 
